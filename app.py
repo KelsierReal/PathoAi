@@ -1,5 +1,4 @@
 from flask import Flask, request, render_template, jsonify
-import subprocess
 import os
 import base64
 import logging
@@ -16,71 +15,71 @@ known_results = {
 Diagnosis: Plasmodium Falciparum Detected
 Confidence: 92%
 Severity: High
-Explanation: The AI model identified characteristic ring forms and gametocytes, indicative of Plasmodium Falciparum, the most severe malaria parasite causing complications like cerebral malaria.
-Recommendations: Immediate initiation of artemisinin-based combination therapy (ACT). Hospitalization recommended for severe symptoms. Consult a specialist.
+Explanation: The AI model detected characteristic ring forms and gametocytes, confirming Plasmodium Falciparum, the most severe malaria parasite linked to cerebral malaria and organ failure.
+Recommendations: Initiate artemisinin-based combination therapy (ACT) immediately. Hospitalization is critical for severe cases. Consult an infectious disease specialist.
 """,
     'slide2': """
 Diagnosis: Plasmodium Vivax Detected
 Confidence: 87%
 Severity: Moderate
-Explanation: Enlarged red blood cells with Schüffner's dots and trophozoites observed, typical of Plasmodium Vivax, which can cause relapsing malaria due to liver hypnozoites.
-Recommendations: Administer chloroquine followed by primaquine to clear liver stages. Monitor for relapse over 6-12 months.
+Explanation: Enlarged red blood cells with Schüffner's dots and trophozoites observed, indicative of Plasmodium Vivax, known for relapsing malaria due to dormant liver hypnozoites.
+Recommendations: Administer chloroquine followed by primaquine to eradicate liver stages. Monitor for relapses every 3-6 months.
 """,
     'slide3': """
 Diagnosis: No Malaria Detected
 Confidence: 95%
 Status: Clear
-Explanation: Blood smear shows normal erythrocytes with no parasitic forms. No evidence of malaria infection.
-Recommendations: Maintain mosquito prevention (nets, repellents). Retest if symptoms persist.
+Explanation: The blood smear shows normal erythrocytes with no parasitic forms, ruling out malaria infection.
+Recommendations: Continue mosquito prevention (nets, repellents). Retest if symptoms like fever or fatigue persist.
 """,
     'slide4': """
 Diagnosis: Plasmodium Ovale Detected
 Confidence: 89%
 Severity: Low to Moderate
-Explanation: Oval-shaped infected cells with James' dots detected, characteristic of Plasmodium Ovale, a less common relapsing malaria species.
-Recommendations: Chloroquine treatment followed by primaquine. Schedule follow-up to monitor for relapses.
+Explanation: Oval-shaped infected cells with James' dots detected, characteristic of Plasmodium Ovale, a relapsing malaria species with milder symptoms.
+Recommendations: Treat with chloroquine and primaquine. Schedule follow-up to monitor for relapses.
 """,
     'slide5': """
 Diagnosis: Plasmodium Malariae Detected
 Confidence: 91%
 Severity: Moderate
-Explanation: Band forms and rosette schizonts identified, typical of Plasmodium Malariae, which may lead to chronic infections with quartan fever cycles.
-Recommendations: Chloroquine or ACT. Monitor kidney function due to potential nephrotic syndrome.
+Explanation: Band forms and rosette schizonts identified, typical of Plasmodium Malariae, which can cause chronic infections with quartan fever cycles.
+Recommendations: Use chloroquine or ACT. Monitor kidney function to prevent nephrotic syndrome.
 """,
     'slide6': """
 Diagnosis: Mixed Infection (Falciparum + Vivax)
 Confidence: 85%
 Severity: High
-Explanation: Both Falciparum ring forms and Vivax trophozoites detected, indicating a complex mixed infection requiring aggressive treatment.
-Recommendations: Broad-spectrum ACT. Urgent hospital evaluation to manage complications.
+Explanation: Both Falciparum ring forms and Vivax trophozoites detected, indicating a complex mixed infection that increases treatment complexity.
+Recommendations: Broad-spectrum ACT required. Urgent hospital evaluation to manage potential complications.
 """,
     'slide7': """
 Diagnosis: No Malaria Detected, Artifacts Noted
 Confidence: 93%
 Status: Clear with Notes
-Explanation: Staining artifacts mimicking parasites observed, but no confirmed infection. Erythrocytes appear normal.
-Recommendations: Ensure clean slide preparation and retest if symptoms persist.
+Explanation: Staining artifacts mimicking parasites observed, but no confirmed infection. Erythrocytes appear structurally normal.
+Recommendations: Ensure high-quality slide preparation and retest if symptomatic.
 """,
     'slide8': """
 Diagnosis: Plasmodium Knowlesi Detected
 Confidence: 88%
 Severity: Variable (Potentially High)
 Explanation: Banana-shaped gametocytes and rapid replication cycles detected, consistent with Plasmodium Knowlesi, a zoonotic malaria prevalent in Southeast Asia.
-Recommendations: ACT treatment. Notify health authorities in endemic regions.
+Recommendations: ACT treatment. Report to health authorities in endemic regions.
 """,
     'slide9': """
 Diagnosis: Suspected Malaria, Indeterminate Species
 Confidence: 80%
 Severity: Unknown
 Explanation: Parasitic forms present, but poor slide quality prevents species identification. General malaria features like ring forms observed.
-Recommendations: Retest with a high-quality sample. Consider empirical antimalarial treatment if clinically indicated.
+Recommendations: Retest with a high-quality sample. Consider empirical antimalarial treatment if symptoms are present.
 """,
     'slide10': """
 Diagnosis: No Malaria Detected, Healthy Sample
 Confidence: 98%
 Status: Clear
-Explanation: Pristine blood smear with healthy erythrocytes and no parasitic elements, indicating no malaria infection.
-Recommendations: Continue preventive measures. Annual screening in endemic areas.
+Explanation: Pristine blood smear with healthy erythrocytes and no parasitic elements, confirming no malaria infection.
+Recommendations: Maintain preventive measures (e.g., mosquito nets). Annual screening in endemic areas.
 """
 }
 
@@ -106,50 +105,18 @@ def upload():
         logger.error(f"Invalid file format: {ext}")
         return jsonify({'error': 'Invalid file format. Please upload a .png or .jpg file.'}), 400
 
-    # Get Python result based on base filename
-    py_result = known_results.get(base_filename, """
+    # Get AI diagnosis based on base filename
+    result = known_results.get(base_filename, """
 Diagnosis: No Diagnostic Data Available
 Explanation: The uploaded slide does not match any known demo samples (slide1 to slide10, .png or .jpg).
 Recommendations: Rename your file to match a demo slide (e.g., slide1.jpg) or upload a supported sample.
 """)
 
-    # Run C program
-    c_output = ''
-    try:
-        c_output = subprocess.check_output('./analysis', shell=True, stderr=subprocess.STDOUT).decode('utf-8')
-        logger.info("C program executed successfully")
-    except subprocess.CalledProcessError as e:
-        c_output = f"C Analysis Error: {e.output.decode('utf-8')}"
-        logger.error(f"C program error: {c_output}")
-    except Exception as e:
-        c_output = f"C Analysis Error: {str(e)}"
-        logger.error(f"C program exception: {c_output}")
-
-    # Run Java program
-    java_output = ''
-    try:
-        java_output = subprocess.check_output('java ReportGenerator', shell=True, stderr=subprocess.STDOUT).decode('utf-8')
-        logger.info("Java program executed successfully")
-    except subprocess.CalledProcessError as e:
-        java_output = f"Java Report Error: {e.output.decode('utf-8')}"
-        logger.error(f"Java program error: {java_output}")
-    except Exception as e:
-        java_output = f"Java Report Error: {str(e)}"
-        logger.error(f"Java program exception: {java_output}")
-
-    # Combine outputs with HTML formatting
+    # Format result for UI
     full_result = f"""
 <div class='result-section'>
-    <h3>AI Diagnosis</h3>
-    <pre>{py_result.strip()}</pre>
-</div>
-<div class='result-section'>
-    <h3>Low-Level Image Scan (C)</h3>
-    <pre>{c_output.strip()}</pre>
-</div>
-<div class='result-section'>
-    <h3>Medical Report (Java)</h3>
-    <pre>{java_output.strip()}</pre>
+    <h3>AI Diagnosis Report</h3>
+    <pre>{result.strip()}</pre>
 </div>
 """
 
