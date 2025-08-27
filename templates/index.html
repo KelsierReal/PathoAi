@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Powered Digital Pathologist</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #121212;
+            color: #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: #1a1a1a;
+            width: 100%;
+            max-width: 1000px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #26a69a;
+            box-shadow: 0 0 15px rgba(38, 166, 154, 0.4);
+        }
+
+        .navbar .logo {
+            font-size: 26px;
+            font-weight: 700;
+            color: #26a69a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(38, 166, 154, 0.5);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links li a {
+            color: #b0bec5;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links li a:hover {
+            color: #00e5ff;
+        }
+
+        .nav-links li a:hover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #00e5ff;
+            bottom: -4px;
+            left: 0;
+            animation: neonSlide 0.3s ease forwards;
+        }
+
+        @keyframes neonSlide {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .hamburger {
+            display: none;
+            color: #26a69a;
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 1000px;
+            width: 100%;
+            animation: neonFade 1.2s ease forwards;
+        }
+
+        .hero-section h1 {
+            font-size: 42px;
+            color: #26a69a;
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(38, 166, 154, 0.6);
+        }
+
+        .hero-section p {
+            font-size: 20px;
+            color: #90a4ae;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .upload-section {
+            padding: 40px 20px;
+            max-width: 1000px;
+            width: 100%;
+            animation: neonFade 1.2s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .upload-container {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(38, 166, 154, 0.3);
+            border: 2px solid #26a69a;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-container:hover {
+            transform: translateY(-5px);
+        }
+
+        #image-upload {
+            display: none;
+        }
+
+        .drop-zone {
+            border: 3px dashed #26a69a;
+            padding: 40px;
+            border-radius: 12px;
+            background: #222222;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .drop-zone.dragover, .drop-zone:hover {
+            background: #26a69a;
+            color: #121212;
+            border-color: #00e5ff;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
+            transform: scale(1.03);
+            animation: neonPulse 1.5s infinite;
+        }
+
+        .drop-zone p {
+            font-size: 18px;
+            color: #b0bec5;
+            transition: color 0.3s ease;
+        }
+
+        .drop-zone.dragover p, .drop-zone:hover p {
+            color: #121212;
+        }
+
+        #submit-btn {
+            background: #26a69a;
+            color: #121212;
+            border: none;
+            padding: 15px 35px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(38, 166, 154, 0.5);
+        }
+
+        #submit-btn:hover {
+            background: #00e5ff;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.8);
+        }
+
+        .results-section {
+            padding: 40px 20px;
+            max-width: 1000px;
+            width: 100%;
+            animation: neonFade 1.2s ease 0.6s forwards;
+            opacity: 0;
+        }
+
+        .results-section h2 {
+            font-size: 34px;
+            color: #26a69a;
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 0 0 12px rgba(38, 166, 154, 0.4);
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(38, 166, 154, 0.3);
+            border: 2px solid #26a69a;
+        }
+
+        .result-section {
+            margin-bottom: 15px;
+        }
+
+        .result-section h3 {
+            color: #26a69a;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 10px 0;
+            text-shadow: 0 0 8px rgba(38, 166, 154, 0.3);
+        }
+
+        .result-section pre {
+            white-space: pre-wrap;
+            background: #222222;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #00e5ff;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        .image-preview {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: slideInRight 0.6s ease forwards;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 450px;
+            border-radius: 12px;
+            border: 3px solid #26a69a;
+            box-shadow: 0 0 25px rgba(38, 166, 154, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .image-preview img:hover {
+            transform: scale(1.05);
+        }
+
+        #loading {
+            display: none;
+            position: relative;
+            width: 50px;
+            height: 50px;
+            margin: 30px auto;
+            border: 5px solid #26a69a;
+            border-top: 5px solid #00e5ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite, neonGlow 1.5s ease-in-out infinite;
+        }
+
+        #loading::before, #loading::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #00e5ff;
+            border-radius: 50%;
+            animation: orbit 1.2s linear infinite;
+        }
+
+        #loading::before {
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #loading::after {
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0.6s;
+        }
+
+        @keyframes neonFade {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes neonGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(0, 229, 255, 0.8); }
+        }
+
+        @keyframes orbit {
+            0% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-12px); }
+            100% { transform: translateX(-50%) translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 15px;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: #1a1a1a;
+                width: 100%;
+                padding: 20px;
+                border-bottom: 2px solid #26a69a;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hero-section h1 {
+                font-size: 34px;
+            }
+
+            .hero-section p {
+                font-size: 16px;
+            }
+
+            .results-container {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .image-preview img {
+                max-height: 350px;
+            }
+
+            .upload-container, .results-container {
+                padding: 20px;
+            }
+
+            .drop-zone {
+                padding: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">AI Pathologist</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#upload">Upload</a></li>
+            <li><a href="#results">Results</a></li>
+        </ul>
+        <div class="hamburger">☰</div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero-section">
+        <h1>AI Powered Digital Pathologist</h1>
+        <p>Analyze malaria slide images with cutting-edge AI technology for instant, accurate diagnoses.</p>
+    </section>
+
+    <!-- Upload Section -->
+    <section id="upload" class="upload-section">
+        <div class="upload-container">
+            <input type="file" id="image-upload" accept="image/*" required>
+            <div class="drop-zone">
+                <p>Drag & drop your slide image (.png or .jpg) or click to browse</p>
+            </div>
+            <button id="submit-btn">Analyze Slide</button>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results" class="results-section">
+        <h2>Analysis Results</h2>
+        <div class="results-container">
+            <div id="result-text" class="result-text"></div>
+            <div id="image-preview" class="image-preview"></div>
+        </div>
+        <div id="loading"></div>
+    </section>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Drag-and-drop functionality
+        const dropZone = document.querySelector('.drop-zone');
+        const fileInput = document.querySelector('#image-upload');
+        const submitBtn = document.querySelector('#submit-btn');
+        const resultText = document.querySelector('#result-text');
+        const imagePreview = document.querySelector('#image-preview');
+        const loadingSpinner = document.querySelector('#loading');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                dropZone.querySelector('p').innerHTML = `Selected: <strong>${files[0].name}</strong>`;
+            }
+        });
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                dropZone.querySelector('p').innerHTML = `Selected: <strong>${fileInput.files[0].name}</strong>`;
+            }
+        });
+
+        // Form submission with AJAX
+        submitBtn.addEventListener('click', () => {
+            if (!fileInput.files.length) {
+                alert('Please select an image.');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            loadingSpinner.style.display = 'block';
+            resultText.innerHTML = '';
+            imagePreview.innerHTML = '';
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                loadingSpinner.style.display = 'none';
+                if (data.error) {
+                    resultText.innerHTML = `<div class="result-section"><pre>${data.error}</pre></div>`;
+                } else {
+                    resultText.innerHTML = data.result;
+                    imagePreview.innerHTML = `<img src="data:${data.mime_type};base64,${data.image_data}" alt="Uploaded Slide">`;
+                }
+            })
+            .catch(error => {
+                loadingSpinner.style.display = 'none';
+                resultText.innerHTML = `<div class="result-section"><pre>Error: ${error.message}</pre></div>`;
+            });
+        });
+    </script>
+</body>
+</html>
