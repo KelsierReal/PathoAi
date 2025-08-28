@@ -108,8 +108,6 @@ def upload():
     # Get AI diagnosis based on base filename
     result = known_results.get(base_filename, """
 Diagnosis: No Diagnostic Data Available
-Explanation: The uploaded slide does not match any known demo samples (slide1 to slide10, .png or .jpg).
-Recommendations: Rename your file to match a demo slide (e.g., slide1.jpg) or upload a supported sample.
 """)
 
     # Format result for UI
