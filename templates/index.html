@@ -3,574 +3,491 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spectra AI - Malaria Diagnosis Platform</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>AI Powered Digital Pathologist</title>
     <style>
-        :root {
-            --primary: #0056b3;
-            --secondary: #003d82;
-            --accent: #00a896;
-            --light: #f8f9fa;
-            --dark: #212529;
-            --success: #28a745;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
-        
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f7fa;
-            color: #333;
-            min-height: 100vh;
-        }
-        
-        .navbar {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.2);
-            padding: 12px 0;
-        }
-        
-        .navbar-brand {
-            font-weight: 700;
-            font-size: 1.8rem;
-            color: white !important;
+            background: #121212;
+            color: #e0e0e0;
             display: flex;
+            flex-direction: column;
             align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
         }
-        
-        .navbar-brand i {
-            margin-right: 10px;
-            color: var(--accent);
+
+        .navbar {
+            background: #1a1a1a;
+            width: 100%;
+            max-width: 1000px;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 2px solid #26a69a;
+            box-shadow: 0 0 15px rgba(38, 166, 154, 0.4);
         }
-        
-        .hero-section {
-            background: linear-gradient(rgba(0, 50, 100, 0.85), rgba(0, 50, 100, 0.9)), url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
-            background-size: cover;
-            background-position: center;
-            color: white;
-            padding: 60px 0;
-            margin-bottom: 40px;
-            border-radius: 0 0 20px 20px;
-        }
-        
-        .hero-section h1 {
+
+        .navbar .logo {
+            font-size: 26px;
             font-weight: 700;
-            font-size: 3.2rem;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            color: #26a69a;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(38, 166, 154, 0.5);
         }
-        
-        .hero-section p {
-            font-size: 1.3rem;
-            max-width: 700px;
-            opacity: 0.9;
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 30px;
         }
-        
-        .card {
-            border-radius: 12px;
-            border: none;
-            box-shadow: 0 6px 15px rgba(0, 86, 179, 0.15);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 25px;
-            overflow: hidden;
-            height: 100%;
+
+        .nav-links li a {
+            color: #b0bec5;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            transition: color 0.3s ease;
         }
-        
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 86, 179, 0.25);
+
+        .nav-links li a:hover {
+            color: #00e5ff;
         }
-        
-        .upload-container {
-            background: white;
-            border-radius: 16px;
-            padding: 30px;
-            box-shadow: 0 8px 30px rgba(0, 86, 179, 0.12);
+
+        .nav-links li a:hover::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 2px;
+            background: #00e5ff;
+            bottom: -4px;
+            left: 0;
+            animation: neonSlide 0.3s ease forwards;
         }
-        
-        .drop-zone {
-            border: 3px dashed var(--primary);
-            border-radius: 12px;
-            padding: 40px 20px;
-            text-align: center;
-            background-color: #eef5ff;
-            transition: all 0.3s ease;
+
+        @keyframes neonSlide {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        .hamburger {
+            display: none;
+            color: #26a69a;
+            font-size: 30px;
             cursor: pointer;
-            margin: 20px 0;
         }
-        
-        .drop-zone:hover {
-            background-color: #dbe8ff;
-            border-color: var(--secondary);
+
+        .hero-section {
+            text-align: center;
+            padding: 60px 20px;
+            max-width: 1000px;
+            width: 100%;
+            animation: neonFade 1.2s ease forwards;
         }
-        
-        .drop-zone i {
-            font-size: 3.5rem;
-            color: var(--primary);
+
+        .hero-section h1 {
+            font-size: 42px;
+            color: #26a69a;
             margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(38, 166, 154, 0.6);
         }
-        
-        .result-section {
-            background: white;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 8px 30px rgba(0, 86, 179, 0.12);
-            margin-top: 30px;
+
+        .hero-section p {
+            font-size: 20px;
+            color: #90a4ae;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .upload-section {
+            padding: 40px 20px;
+            max-width: 1000px;
+            width: 100%;
+            animation: neonFade 1.2s ease 0.4s forwards;
+            opacity: 0;
+        }
+
+        .upload-container {
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(38, 166, 154, 0.3);
+            border: 2px solid #26a69a;
+            transition: transform 0.3s ease;
+        }
+
+        .upload-container:hover {
+            transform: translateY(-5px);
+        }
+
+        #image-upload {
             display: none;
         }
-        
-        .diagnosis-card {
-            border-left: 5px solid var(--accent);
-            background-color: #f0faf8;
-            border-radius: 8px;
-            padding: 20px;
+
+        .drop-zone {
+            border: 3px dashed #26a69a;
+            padding: 40px;
+            border-radius: 12px;
+            background: #222222;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        
-        .diagnosis-header {
-            display: flex;
-            align-items: center;
+
+        .drop-zone.dragover, .drop-zone:hover {
+            background: #26a69a;
+            color: #121212;
+            border-color: #00e5ff;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.6);
+            transform: scale(1.03);
+            animation: neonPulse 1.5s infinite;
+        }
+
+        .drop-zone p {
+            font-size: 18px;
+            color: #b0bec5;
+            transition: color 0.3s ease;
+        }
+
+        .drop-zone.dragover p, .drop-zone:hover p {
+            color: #121212;
+        }
+
+        #submit-btn {
+            background: #26a69a;
+            color: #121212;
+            border: none;
+            padding: 15px 35px;
+            font-size: 18px;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(38, 166, 154, 0.5);
+        }
+
+        #submit-btn:hover {
+            background: #00e5ff;
+            transform: scale(1.1);
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.8);
+        }
+
+        .results-section {
+            padding: 40px 20px;
+            max-width: 1000px;
+            width: 100%;
+            animation: neonFade 1.2s ease 0.6s forwards;
+            opacity: 0;
+        }
+
+        .results-section h2 {
+            font-size: 34px;
+            color: #26a69a;
+            text-align: center;
+            margin-bottom: 25px;
+            text-shadow: 0 0 12px rgba(38, 166, 154, 0.4);
+        }
+
+        .results-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            background: #1a1a1a;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 25px rgba(38, 166, 154, 0.3);
+            border: 2px solid #26a69a;
+        }
+
+        .result-section {
             margin-bottom: 15px;
         }
-        
-        .diagnosis-icon {
-            background: var(--accent);
-            color: white;
+
+        .result-section h3 {
+            color: #26a69a;
+            font-size: 20px;
+            font-weight: 600;
+            margin: 10px 0;
+            text-shadow: 0 0 8px rgba(38, 166, 154, 0.3);
+        }
+
+        .result-section pre {
+            white-space: pre-wrap;
+            background: #222222;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid #00e5ff;
+            font-size: 15px;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        .image-preview {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: slideInRight 0.6s ease forwards;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 450px;
+            border-radius: 12px;
+            border: 3px solid #26a69a;
+            box-shadow: 0 0 25px rgba(38, 166, 154, 0.4);
+            transition: transform 0.3s ease;
+        }
+
+        .image-preview img:hover {
+            transform: scale(1.05);
+        }
+
+        #loading {
+            display: none;
+            position: relative;
             width: 50px;
             height: 50px;
+            margin: 30px auto;
+            border: 5px solid #26a69a;
+            border-top: 5px solid #00e5ff;
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.4rem;
-            margin-right: 15px;
+            animation: spin 1s linear infinite, neonGlow 1.5s ease-in-out infinite;
         }
-        
-        .confidence-badge {
-            font-weight: 700;
-            padding: 5px 15px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-top: 10px;
-        }
-        
-        .confidence-high {
-            background-color: #ffebee;
-            color: #c62828;
-        }
-        
-        .confidence-moderate {
-            background-color: #fff8e1;
-            color: #e65100;
-        }
-        
-        .confidence-low {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-        }
-        
-        .recommendation-box {
-            background-color: #e3f2fd;
-            border-left: 4px solid var(--primary);
-            padding: 15px;
-            border-radius: 0 4px 4px 0;
-            margin-top: 15px;
-        }
-        
-        .sample-gallery {
-            margin-top: 50px;
-        }
-        
-        .gallery-item {
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-        }
-        
-        .gallery-item:hover {
-            transform: scale(1.03);
-            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-        }
-        
-        .gallery-caption {
-            padding: 15px;
-            background: white;
-            border-top: 1px solid #eee;
-        }
-        
-        .footer {
-            background: var(--secondary);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 30px 0;
-            margin-top: 50px;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            border: none;
-            padding: 12px 30px;
-            font-weight: 600;
-            border-radius: 50px;
-            transition: all 0.3s;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 86, 179, 0.4);
-        }
-        
-        .btn-outline-primary {
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 10px 25px;
-            border-radius: 50px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-outline-primary:hover {
-            background: var(--primary);
-            color: white;
-        }
-        
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
+
+        #loading::before, #loading::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #00e5ff;
             border-radius: 50%;
-            margin-right: 8px;
+            animation: orbit 1.2s linear infinite;
         }
-        
-        .status-high { background-color: #ff5252; }
-        .status-moderate { background-color: #ffab40; }
-        .status-low { background-color: #00c853; }
-        .status-clear { background-color: #448aff; }
+
+        #loading::before {
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        #loading::after {
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation-delay: 0.6s;
+        }
+
+        @keyframes neonFade {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(30px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes neonPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes neonGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(0, 229, 255, 0.4); }
+            50% { box-shadow: 0 0 30px rgba(0, 229, 255, 0.8); }
+        }
+
+        @keyframes orbit {
+            0% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-12px); }
+            100% { transform: translateX(-50%) translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 15px;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                background: #1a1a1a;
+                width: 100%;
+                padding: 20px;
+                border-bottom: 2px solid #26a69a;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .hero-section h1 {
+                font-size: 34px;
+            }
+
+            .hero-section p {
+                font-size: 16px;
+            }
+
+            .results-container {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+
+            .image-preview img {
+                max-height: 350px;
+            }
+
+            .upload-container, .results-container {
+                padding: 20px;
+            }
+
+            .drop-zone {
+                padding: 30px;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">
-                <i class="fas fa-microscope"></i>
-                Spectra AI
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-vial me-1"></i> Technology</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-hospital me-1"></i> For Clinics</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="fas fa-info-circle me-1"></i> About</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">AI Pathologist</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#upload">Upload</a></li>
+            <li><a href="#results">Results</a></li>
+        </ul>
+        <div class="hamburger">☰</div>
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero-section text-center">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-lg-10">
-                    <h1>AI-Powered Malaria Diagnosis</h1>
-                    <p class="lead">Advanced deep learning analysis of blood slides for rapid, accurate malaria detection and species identification</p>
-                    <a href="#upload-section" class="btn btn-lg btn-success px-5 py-3 mt-3">
-                        <i class="fas fa-upload me-2"></i>Upload Your Slide
-                    </a>
-                </div>
-            </div>
-        </div>
+    <section id="home" class="hero-section">
+        <h1>AI Powered Digital Pathologist</h1>
+        <p>Analyze malaria slide images with cutting-edge AI technology for instant, accurate diagnoses.</p>
     </section>
 
     <!-- Upload Section -->
-    <section id="upload-section" class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="text-center mb-5">
-                    <h2 class="fw-bold mb-3">Get Instant Diagnosis</h2>
-                    <p class="text-muted">Upload a blood slide image for AI-powered malaria analysis</p>
-                </div>
-                
-                <div class="upload-container">
-                    <form id="uploadForm" enctype="multipart/form-data">
-                        <div class="drop-zone" id="dropZone">
-                            <i class="fas fa-file-image"></i>
-                            <h4>Drag & Drop Blood Slide Image</h4>
-                            <p class="text-muted">or click to browse files (PNG, JPG)</p>
-                            <input type="file" id="imageInput" name="image" class="d-none" accept=".png,.jpg,.jpeg">
-                        </div>
-                        
-                        <div class="text-center">
-                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3">
-                                <i class="fas fa-diagnoses me-2"></i>Analyze Slide
-                            </button>
-                        </div>
-                    </form>
-                    
-                    <div id="resultSection" class="result-section">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h3 class="mb-4"><i class="fas fa-image me-2"></i>Uploaded Slide</h3>
-                                <div class="border rounded overflow-hidden">
-                                    <img id="imagePreview" class="img-fluid" src="" alt="Blood slide preview">
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6">
-                                <h3 class="mb-4"><i class="fas fa-stethoscope me-2"></i>AI Diagnosis Report</h3>
-                                <div id="diagnosisResult" class="diagnosis-card">
-                                    <!-- Diagnosis content will be inserted here by JavaScript -->
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="mt-4 text-center">
-                            <button id="newAnalysisBtn" class="btn btn-outline-primary px-4">
-                                <i class="fas fa-redo me-2"></i>New Analysis
-                            </button>
-                        </div>
-                    </div>
-                </div>
+    <section id="upload" class="upload-section">
+        <div class="upload-container">
+            <input type="file" id="image-upload" accept="image/*" required>
+            <div class="drop-zone">
+                <p>Drag & drop your slide image (.png or .jpg) or click to browse</p>
             </div>
+            <button id="submit-btn">Analyze Slide</button>
         </div>
     </section>
 
-    <!-- Sample Gallery -->
-    <section class="sample-gallery container">
-        <div class="text-center mb-5">
-            <h2 class="fw-bold mb-3">Analysis Examples</h2>
-            <p class="text-muted">See how Spectra AI identifies different malaria species</p>
+    <!-- Results Section -->
+    <section id="results" class="results-section">
+        <h2>Analysis Results</h2>
+        <div class="results-container">
+            <div id="result-text" class="result-text"></div>
+            <div id="image-preview" class="image-preview"></div>
         </div>
-        
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card gallery-item">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Plasmodium Falciparum">
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-danger">High Severity</span>
-                    </div>
-                    <div class="gallery-caption">
-                        <h5 class="card-title">Plasmodium Falciparum</h5>
-                        <p class="card-text text-muted">Characteristic ring forms and gametocytes detected</p>
-                        <span class="status-indicator status-high"></span> <strong>92% Confidence</strong>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card gallery-item">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1606811971613-5b921e93ea7c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Plasmodium Vivax">
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-warning text-dark">Moderate Severity</span>
-                    </div>
-                    <div class="gallery-caption">
-                        <h5 class="card-title">Plasmodium Vivax</h5>
-                        <p class="card-text text-muted">Enlarged RBCs with Schüffner's dots observed</p>
-                        <span class="status-indicator status-moderate"></span> <strong>87% Confidence</strong>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="col-md-4">
-                <div class="card gallery-item">
-                    <div class="position-relative">
-                        <img src="https://images.unsplash.com/photo-1576091160300-297ce22343dc?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" class="card-img-top" alt="Negative Sample">
-                        <span class="position-absolute top-0 end-0 m-2 badge bg-success">Negative</span>
-                    </div>
-                    <div class="gallery-caption">
-                        <h5 class="card-title">No Malaria Detected</h5>
-                        <p class="card-text text-muted">Normal erythrocytes, no parasitic forms</p>
-                        <span class="status-indicator status-clear"></span> <strong>95% Confidence</strong>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div id="loading"></div>
     </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 mb-4 mb-md-0">
-                    <h4 class="mb-4"><i class="fas fa-microscope me-2"></i> Spectra AI</h4>
-                    <p>Revolutionizing malaria diagnosis with artificial intelligence for faster, more accurate results to save lives worldwide.</p>
-                    <div class="mt-3">
-                        <a href="#" class="text-white me-3"><i class="fab fa-twitter fa-2x"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-linkedin fa-2x"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-github fa-2x"></i></a>
-                    </div>
-                </div>
-                <div class="col-md-3 mb-4 mb-md-0">
-                    <h5 class="mb-4">Quick Links</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">How It Works</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Technology</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">For Healthcare Providers</a></li>
-                        <li class="mb-2"><a href="#" class="text-white-50 text-decoration-none">Research</a></li>
-                    </ul>
-                </div>
-                <div class="col-md-3">
-                    <h5 class="mb-4">Contact</h5>
-                    <ul class="list-unstyled">
-                        <li class="mb-2"><i class="fas fa-envelope me-2"></i> info@spectra-ai.org</li>
-                        <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> Boston, MA, USA</li>
-                        <li class="mb-2"><i class="fas fa-shield-alt me-2"></i> HIPAA Compliant</li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="my-4 bg-light">
-            <div class="text-center text-white-50">
-                <p>&copy; 2023 Spectra AI. All rights reserved. Advanced AI diagnostics for global health.</p>
-            </div>
-        </div>
-    </footer>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const dropZone = document.getElementById('dropZone');
-            const imageInput = document.getElementById('imageInput');
-            const uploadForm = document.getElementById('uploadForm');
-            const resultSection = document.getElementById('resultSection');
-            const imagePreview = document.getElementById('imagePreview');
-            const diagnosisResult = document.getElementById('diagnosisResult');
-            const newAnalysisBtn = document.getElementById('newAnalysisBtn');
-            
-            // Drag and drop functionality
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, preventDefaults, false);
-            });
-            
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
+        // Mobile menu toggle
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Drag-and-drop functionality
+        const dropZone = document.querySelector('.drop-zone');
+        const fileInput = document.querySelector('#image-upload');
+        const submitBtn = document.querySelector('#submit-btn');
+        const resultText = document.querySelector('#result-text');
+        const imagePreview = document.querySelector('#image-preview');
+        const loadingSpinner = document.querySelector('#loading');
+
+        dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropZone.classList.add('dragover');
+        });
+
+        dropZone.addEventListener('dragleave', () => {
+            dropZone.classList.remove('dragover');
+        });
+
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                dropZone.querySelector('p').innerHTML = `Selected: <strong>${files[0].name}</strong>`;
             }
-            
-            ['dragenter', 'dragover'].forEach(eventName => {
-                dropZone.addEventListener(eventName, highlight, false);
-            });
-            
-            ['dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, unhighlight, false);
-            });
-            
-            function highlight() {
-                dropZone.style.borderColor = '#003d82';
-                dropZone.style.backgroundColor = '#dbe8ff';
+        });
+
+        dropZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                dropZone.querySelector('p').innerHTML = `Selected: <strong>${fileInput.files[0].name}</strong>`;
             }
-            
-            function unhighlight() {
-                dropZone.style.borderColor = '#0056b3';
-                dropZone.style.backgroundColor = '#eef5ff';
+        });
+
+        // Form submission with AJAX
+        submitBtn.addEventListener('click', () => {
+            if (!fileInput.files.length) {
+                alert('Please select an image.');
+                return;
             }
-            
-            // Handle drop
-            dropZone.addEventListener('drop', handleDrop, false);
-            
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                handleFiles(files);
-            }
-            
-            // Handle click
-            dropZone.addEventListener('click', () => imageInput.click());
-            imageInput.addEventListener('change', (e) => handleFiles(e.target.files));
-            
-            function handleFiles(files) {
-                if (files.length) {
-                    const file = files[0];
-                    const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
-                    
-                    if (validTypes.includes(file.type)) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            imagePreview.src = e.target.result;
-                            dropZone.innerHTML = `
-                                <div class="mb-3">
-                                    <i class="fas fa-file-image text-primary" style="font-size: 3rem;"></i>
-                                </div>
-                                <h5 class="text-truncate" title="${file.name}">${file.name}</h5>
-                                <p class="text-muted">${(file.size / 1024).toFixed(1)} KB</p>
-                            `;
-                        };
-                        reader.readAsDataURL(file);
-                    } else {
-                        alert('Please upload a PNG or JPG image file.');
-                    }
+
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+
+            loadingSpinner.style.display = 'block';
+            resultText.innerHTML = '';
+            imagePreview.innerHTML = '';
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.json();
+            })
+            .then(data => {
+                loadingSpinner.style.display = 'none';
+                if (data.error) {
+                    resultText.innerHTML = `<div class="result-section"><pre>${data.error}</pre></div>`;
+                } else {
+                    resultText.innerHTML = data.result;
+                    imagePreview.innerHTML = `<img src="data:${data.mime_type};base64,${data.image_data}" alt="Uploaded Slide">`;
                 }
-            }
-            
-            // Form submission
-            uploadForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const file = imageInput.files[0];
-                if (!file) {
-                    alert('Please select an image file first.');
-                    return;
-                }
-                
-                const formData = new FormData();
-                formData.append('image', file);
-                
-                // Show loading state
-                const originalBtnText = uploadForm.querySelector('button[type="submit"]').innerHTML;
-                uploadForm.querySelector('button[type="submit"]').innerHTML = 
-                    '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Analyzing...';
-                
-                fetch('/upload', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Update image preview
-                    imagePreview.src = `data:${data.mime_type};base64,${data.image_data}`;
-                    
-                    // Update diagnosis result
-                    diagnosisResult.innerHTML = data.result;
-                    
-                    // Show result section
-                    resultSection.style.display = 'block';
-                    
-                    // Scroll to results
-                    resultSection.scrollIntoView({ behavior: 'smooth' });
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Failed to analyze image. Please try again.');
-                })
-                .finally(() => {
-                    // Restore button text
-                    uploadForm.querySelector('button[type="submit"]').innerHTML = originalBtnText;
-                });
-            });
-            
-            // New analysis button
-            newAnalysisBtn.addEventListener('click', function() {
-                resultSection.style.display = 'none';
-                dropZone.innerHTML = `
-                    <i class="fas fa-file-image"></i>
-                    <h4>Drag & Drop Blood Slide Image</h4>
-                    <p class="text-muted">or click to browse files (PNG, JPG)</p>
-                `;
-                imageInput.value = '';
-                imagePreview.src = '';
+            })
+            .catch(error => {
+                loadingSpinner.style.display = 'none';
+                resultText.innerHTML = `<div class="result-section"><pre>Error: ${error.message}</pre></div>`;
             });
         });
     </script>
