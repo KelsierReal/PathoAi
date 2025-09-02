@@ -11,7 +11,7 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Fake AI results for slides
+# Fake AI results for demo slides
 known_results = {
     "slide1": "Diagnosis: Plasmodium Falciparum Detected\nConfidence: 92%\nSeverity: High",
     "slide2": "Diagnosis: Plasmodium Vivax Detected\nConfidence: 87%\nSeverity: Moderate",
@@ -40,7 +40,7 @@ def highlight_parasite(file_bytes):
     # Fake bounding box in the center
     start_point = (int(w * 0.4), int(h * 0.4))
     end_point = (int(w * 0.6), int(h * 0.6))
-    color = (0, 0, 255)  # Red box
+    color = (0, 0, 255)  # Red
     thickness = 3
 
     cv2.rectangle(img, start_point, end_point, color, thickness)
@@ -77,7 +77,7 @@ def upload():
     # Pick fake result
     result = known_results.get(base_filename, "Diagnosis: No Diagnostic Data Available")
 
-    # Prepare result for frontend
+    # Format result for frontend
     formatted_result = f"""
     <div class="result-section">
         <h3>AI Diagnosis Report</h3>
@@ -86,7 +86,7 @@ def upload():
     """
 
     try:
-        # Read image once
+        # Read file bytes
         file_bytes = file.read()
         highlighted_image = highlight_parasite(file_bytes)
         mime_type = "image/png"
