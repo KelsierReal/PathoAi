@@ -2,6 +2,8 @@ from flask import Flask, request, render_template, jsonify
 import os
 import base64
 import logging
+import cv2
+import numpy as np
 
 app = Flask(__name__)
 
@@ -11,86 +13,49 @@ logger = logging.getLogger(__name__)
 
 # Predefined mappings for 10 slides with detailed fake results
 known_results = {
-    'slide1': """
-Diagnosis: Plasmodium Falciparum Detected
-Confidence: 92%
-Severity: High
-Explanation: The AI model detected characteristic ring forms and gametocytes, confirming Plasmodium Falciparum, the most severe malaria parasite linked to cerebral malaria and organ failure.
-Recommendations: Initiate artemisinin-based combination therapy (ACT) immediately. Hospitalization is critical for severe cases. Consult an infectious disease specialist.
-""",
-    'slide2': """
-Diagnosis: Plasmodium Vivax Detected
-Confidence: 87%
-Severity: Moderate
-Explanation: Enlarged red blood cells with Schüffner's dots and trophozoites observed, indicative of Plasmodium Vivax, known for relapsing malaria due to dormant liver hypnozoites.
-Recommendations: Administer chloroquine followed by primaquine to eradicate liver stages. Monitor for relapses every 3-6 months.
-""",
-    'slide3': """
-Diagnosis: No Malaria Detected
-Confidence: 95%
-Status: Clear
-Explanation: The blood smear shows normal erythrocytes with no parasitic forms, ruling out malaria infection.
-Recommendations: Continue mosquito prevention (nets, repellents). Retest if symptoms like fever or fatigue persist.
-""",
-    'slide4': """
-Diagnosis: Plasmodium Ovale Detected
-Confidence: 89%
-Severity: Low to Moderate
-Explanation: Oval-shaped infected cells with James' dots detected, characteristic of Plasmodium Ovale, a relapsing malaria species with milder symptoms.
-Recommendations: Treat with chloroquine and primaquine. Schedule follow-up to monitor for relapses.
-""",
-    'slide5': """
-Diagnosis: Plasmodium Malariae Detected
-Confidence: 91%
-Severity: Moderate
-Explanation: Band forms and rosette schizonts identified, typical of Plasmodium Malariae, which can cause chronic infections with quartan fever cycles.
-Recommendations: Use chloroquine or ACT. Monitor kidney function to prevent nephrotic syndrome.
-""",
-    'slide6': """
-Diagnosis: Mixed Infection (Falciparum + Vivax)
-Confidence: 85%
-Severity: High
-Explanation: Both Falciparum ring forms and Vivax trophozoites detected, indicating a complex mixed infection that increases treatment complexity.
-Recommendations: Broad-spectrum ACT required. Urgent hospital evaluation to manage potential complications.
-""",
-    'slide7': """
-Diagnosis: No Malaria Detected, Artifacts Noted
-Confidence: 93%
-Status: Clear with Notes
-Explanation: Staining artifacts mimicking parasites observed, but no confirmed infection. Erythrocytes appear structurally normal.
-Recommendations: Ensure high-quality slide preparation and retest if symptomatic.
-""",
-    'slide8': """
-Diagnosis: Plasmodium Knowlesi Detected
-Confidence: 88%
-Severity: Variable (Potentially High)
-Explanation: Banana-shaped gametocytes and rapid replication cycles detected, consistent with Plasmodium Knowlesi, a zoonotic malaria prevalent in Southeast Asia.
-Recommendations: ACT treatment. Report to health authorities in endemic regions.
-""",
-    'slide9': """
-Diagnosis: Suspected Malaria, Indeterminate Species
-Confidence: 80%
-Severity: Unknown
-Explanation: Parasitic forms present, but poor slide quality prevents species identification. General malaria features like ring forms observed.
-Recommendations: Retest with a high-quality sample. Consider empirical antimalarial treatment if symptoms are present.
-""",
-    'slide10': """
-Diagnosis: No Malaria Detected, Healthy Sample
-Confidence: 98%
-Status: Clear
-Explanation: Pristine blood smear with healthy erythrocytes and no parasitic elements, confirming no malaria infection.
-Recommendations: Maintain preventive measures (e.g., mosquito nets). Annual screening in endemic areas.
-"""
+    'slide1': """Diagnosis: Plasmodium Falciparum Detected ...""",
+    'slide2': """Diagnosis: Plasmodium Vivax Detected ...""",
+    'slide3': """Diagnosis: No Malaria Detected ...""",
+    'slide4': """Diagnosis: Plasmodium Ovale Detected ...""",
+    'slide5': """Diagnosis: Plasmodium Malariae Detected ...""",
+    'slide6': """Diagnosis: Mixed Infection (Falciparum + Vivax) ...""",
+    'slide7': """Diagnosis: No Malaria Detected, Artifacts Noted ...""",
+    'slide8': """Diagnosis: Plasmodium Knowlesi Detected ...""",
+    'slide9': """Diagnosis: Suspected Malaria, Indeterminate Species ...""",
+    'slide10': """Diagnosis: No Malaria Detected, Healthy Sample ..."""
 }
+
+def highlight_parasite(image_stream):
+    """Simulate parasite highlighting with a red bounding box"""
+    file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
+    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+
+    if img is None:
+        raise ValueError("Invalid image data")
+
+    # Fake bounding box in the middle of the image
+    h, w, _ = img.shape
+    start_point = (int(w * 0.4), int(h * 0.4))
+    end_point = (int(w * 0.6), int(h * 0.6))
+    color = (0, 0, 255)  # Red
+    thickness = 3
+    cv2.rectangle(img, start_point, end_point, color, thickness)
+
+    # Encode back to base64
+    _, buffer = cv2.imencode('.png', img)
+    return base64.b64encode(buffer).decode('utf-8')
+
 
 @app.route('/', methods=['GET'])
 def index():
     logger.info("Rendering index page")
     return render_template('index.html')
 
+
 @app.route('/upload', methods=['POST'])
 def upload():
     logger.info("Received upload request")
+
     if 'image' not in request.files:
         logger.error("No file uploaded")
         return jsonify({'error': 'No file uploaded.'}), 400
@@ -106,30 +71,32 @@ def upload():
         return jsonify({'error': 'Invalid file format. Please upload a .png or .jpg file.'}), 400
 
     # Get AI diagnosis based on base filename
-    result = known_results.get(base_filename, """
-Diagnosis: No Diagnostic Data Available
-""")
+    result = known_results.get(base_filename, "Diagnosis: No Diagnostic Data Available")
 
     # Format result for UI
     full_result = f"""
-<div class='result-section'>
-    <h3>AI Diagnosis Report</h3>
-    <pre>{result.strip()}</pre>
-</div>
-"""
+    <div class='result-section'>
+        <h3>AI Diagnosis Report</h3>
+        <pre>{result.strip()}</pre>
+    </div>
+    """
 
-    # Encode image for preview
+    # Highlight parasite & prepare preview
     try:
-        file.stream.seek(0)
-        image_data = base64.b64encode(file.stream.read()).decode('utf-8')
-        mime_type = file.mimetype
-        logger.info("Image encoded for preview")
+        file.stream.seek(0)  # Reset stream before processing
+        highlighted_image = highlight_parasite(file.stream)
+        mime_type = "image/png"
+        logger.info("Parasite highlighted in image")
     except Exception as e:
-        logger.error(f"Image encoding error: {str(e)}")
+        logger.error(f"Image processing error: {str(e)}")
         return jsonify({'error': f"Image processing error: {str(e)}"}), 500
 
     return jsonify({
         'result': full_result,
-        'image_data': image_data,
+        'image_data': highlighted_image,
         'mime_type': mime_type
     })
+
+
+if __name__ == '__main__':
+    app.run(debug=True)
