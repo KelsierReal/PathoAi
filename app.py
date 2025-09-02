@@ -7,96 +7,99 @@ import numpy as np
 
 app = Flask(__name__)
 
-# Configure logging
+# Setup logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Predefined mappings for 10 slides with detailed fake results
+# Fake AI results for slides
 known_results = {
-    'slide1': """Diagnosis: Plasmodium Falciparum Detected ...""",
-    'slide2': """Diagnosis: Plasmodium Vivax Detected ...""",
-    'slide3': """Diagnosis: No Malaria Detected ...""",
-    'slide4': """Diagnosis: Plasmodium Ovale Detected ...""",
-    'slide5': """Diagnosis: Plasmodium Malariae Detected ...""",
-    'slide6': """Diagnosis: Mixed Infection (Falciparum + Vivax) ...""",
-    'slide7': """Diagnosis: No Malaria Detected, Artifacts Noted ...""",
-    'slide8': """Diagnosis: Plasmodium Knowlesi Detected ...""",
-    'slide9': """Diagnosis: Suspected Malaria, Indeterminate Species ...""",
-    'slide10': """Diagnosis: No Malaria Detected, Healthy Sample ..."""
+    "slide1": "Diagnosis: Plasmodium Falciparum Detected\nConfidence: 92%\nSeverity: High",
+    "slide2": "Diagnosis: Plasmodium Vivax Detected\nConfidence: 87%\nSeverity: Moderate",
+    "slide3": "Diagnosis: No Malaria Detected\nConfidence: 95%\nStatus: Clear",
+    "slide4": "Diagnosis: Plasmodium Ovale Detected\nConfidence: 89%\nSeverity: Low to Moderate",
+    "slide5": "Diagnosis: Plasmodium Malariae Detected\nConfidence: 91%\nSeverity: Moderate",
+    "slide6": "Diagnosis: Mixed Infection (Falciparum + Vivax)\nConfidence: 85%\nSeverity: High",
+    "slide7": "Diagnosis: No Malaria Detected, Artifacts Noted\nConfidence: 93%",
+    "slide8": "Diagnosis: Plasmodium Knowlesi Detected\nConfidence: 88%",
+    "slide9": "Diagnosis: Suspected Malaria, Indeterminate Species\nConfidence: 80%",
+    "slide10": "Diagnosis: No Malaria Detected, Healthy Sample\nConfidence: 98%"
 }
 
-def highlight_parasite(image_stream):
-    """Simulate parasite highlighting with a red bounding box"""
-    file_bytes = np.asarray(bytearray(image_stream.read()), dtype=np.uint8)
-    img = cv2.imdecode(file_bytes, cv2.IMREAD_COLOR)
+def highlight_parasite(file_bytes):
+    """
+    Fake parasite highlighting by drawing a red rectangle in the middle of the image.
+    """
+    np_bytes = np.frombuffer(file_bytes, np.uint8)
+    img = cv2.imdecode(np_bytes, cv2.IMREAD_COLOR)
 
     if img is None:
-        raise ValueError("Invalid image data")
+        raise ValueError("Image could not be decoded. Possibly corrupt or unsupported format.")
 
-    # Fake bounding box in the middle of the image
     h, w, _ = img.shape
+
+    # Fake bounding box in the center
     start_point = (int(w * 0.4), int(h * 0.4))
     end_point = (int(w * 0.6), int(h * 0.6))
-    color = (0, 0, 255)  # Red
+    color = (0, 0, 255)  # Red box
     thickness = 3
+
     cv2.rectangle(img, start_point, end_point, color, thickness)
 
-    # Encode back to base64
-    _, buffer = cv2.imencode('.png', img)
-    return base64.b64encode(buffer).decode('utf-8')
+    # Encode back to base64 PNG
+    _, buffer = cv2.imencode(".png", img)
+    return base64.b64encode(buffer).decode("utf-8")
 
 
-@app.route('/', methods=['GET'])
+@app.route("/", methods=["GET"])
 def index():
-    logger.info("Rendering index page")
-    return render_template('index.html')
+    return render_template("index.html")
 
 
-@app.route('/upload', methods=['POST'])
+@app.route("/upload", methods=["POST"])
 def upload():
-    logger.info("Received upload request")
+    if "image" not in request.files:
+        return jsonify({"error": "No file uploaded"}), 400
 
-    if 'image' not in request.files:
-        logger.error("No file uploaded")
-        return jsonify({'error': 'No file uploaded.'}), 400
-
-    file = request.files['image']
+    file = request.files["image"]
     filename = file.filename
-    logger.info(f"Uploaded file: {filename}")
 
-    # Extract base filename without extension
-    base_filename, ext = os.path.splitext(filename)
-    if ext.lower() not in ['.png', '.jpg', '.jpeg']:
-        logger.error(f"Invalid file format: {ext}")
-        return jsonify({'error': 'Invalid file format. Please upload a .png or .jpg file.'}), 400
+    if filename == "":
+        return jsonify({"error": "No file selected"}), 400
 
-    # Get AI diagnosis based on base filename
+    # Check extension
+    ext = os.path.splitext(filename)[1].lower()
+    if ext not in [".jpg", ".jpeg", ".png"]:
+        return jsonify({"error": "Invalid file format. Please upload .jpg or .png"}), 400
+
+    # Get base name (without extension)
+    base_filename = os.path.splitext(filename)[0]
+
+    # Pick fake result
     result = known_results.get(base_filename, "Diagnosis: No Diagnostic Data Available")
 
-    # Format result for UI
-    full_result = f"""
-    <div class='result-section'>
+    # Prepare result for frontend
+    formatted_result = f"""
+    <div class="result-section">
         <h3>AI Diagnosis Report</h3>
-        <pre>{result.strip()}</pre>
+        <pre>{result}</pre>
     </div>
     """
 
-    # Highlight parasite & prepare preview
     try:
-        file.stream.seek(0)  # Reset stream before processing
-        highlighted_image = highlight_parasite(file.stream)
+        # Read image once
+        file_bytes = file.read()
+        highlighted_image = highlight_parasite(file_bytes)
         mime_type = "image/png"
-        logger.info("Parasite highlighted in image")
     except Exception as e:
-        logger.error(f"Image processing error: {str(e)}")
-        return jsonify({'error': f"Image processing error: {str(e)}"}), 500
+        logger.error(f"Processing error: {e}")
+        return jsonify({"error": f"Image processing error: {str(e)}"}), 500
 
     return jsonify({
-        'result': full_result,
-        'image_data': highlighted_image,
-        'mime_type': mime_type
+        "result": formatted_result,
+        "image_data": highlighted_image,
+        "mime_type": mime_type
     })
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
