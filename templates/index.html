@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Powered Digital Pathologist</title>
+    <title>AI-Powered Digital Pathologist</title>
     <style>
         * {
             margin: 0;
@@ -21,12 +21,25 @@
             align-items: center;
             min-height: 100vh;
             overflow-x: hidden;
-            transition: background 0.3s ease, color 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease, font-size 0.3s ease;
         }
 
         body.light {
             background: #f6f8fa;
             color: #24292e;
+        }
+
+        body.high-contrast {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        body.large-font {
+            font-size: 18px;
+        }
+
+        body.xlarge-font {
+            font-size: 20px;
         }
 
         .navbar {
@@ -42,13 +55,18 @@
             z-index: 1000;
             border-bottom: 2px solid #26a69a;
             box-shadow: 0 0 20px rgba(38, 166, 154, 0.5);
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .navbar.light {
             background: #ffffff;
             border-bottom: 2px solid #007bff;
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .navbar.high-contrast {
+            background: #111111;
+            border-bottom: 2px solid #00e5ff;
         }
 
         .navbar .logo {
@@ -63,6 +81,11 @@
         .navbar.light .logo {
             color: #007bff;
             text-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+        }
+
+        .navbar.high-contrast .logo {
+            color: #00e5ff;
+            text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
         }
 
         .nav-links {
@@ -82,6 +105,10 @@
 
         .navbar.light .nav-links li a {
             color: #24292e;
+        }
+
+        .navbar.high-contrast .nav-links li a {
+            color: #ffffff;
         }
 
         .nav-links li a:hover {
@@ -123,6 +150,10 @@
             color: #007bff;
         }
 
+        .navbar.high-contrast .hamburger {
+            color: #00e5ff;
+        }
+
         .hero-section, .upload-section, .results-section, .history-section, .settings-section, .tutorial-section {
             display: none;
             max-width: 1200px;
@@ -151,6 +182,11 @@
             text-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
         }
 
+        .hero-section.high-contrast h1 {
+            color: #00e5ff;
+            text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+        }
+
         .hero-section p {
             font-size: 22px;
             color: #8b949e;
@@ -160,6 +196,10 @@
 
         .hero-section.light p {
             color: #24292e;
+        }
+
+        .hero-section.high-contrast p {
+            color: #ffffff;
         }
 
         .upload-section {
@@ -181,6 +221,12 @@
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
         }
 
+        .upload-container.high-contrast {
+            background: #111111;
+            border-color: #00e5ff;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+
         .upload-container:hover {
             transform: translateY(-8px);
             box-shadow: 0 0 40px rgba(38, 166, 154, 0.6);
@@ -188,6 +234,10 @@
 
         .upload-container.light:hover {
             box-shadow: 0 0 40px rgba(0, 123, 255, 0.4);
+        }
+
+        .upload-container.high-contrast:hover {
+            box-shadow: 0 0 40px rgba(0, 229, 255, 0.6);
         }
 
         #image-upload {
@@ -210,6 +260,11 @@
             border-color: #007bff;
         }
 
+        .drop-zone.high-contrast {
+            background: #222222;
+            border-color: #00e5ff;
+        }
+
         .drop-zone.dragover, .drop-zone:hover {
             background: #26a69a;
             color: #0d1117;
@@ -225,6 +280,13 @@
             box-shadow: 0 0 40px rgba(0, 123, 255, 0.5);
         }
 
+        .drop-zone.high-contrast.dragover, .drop-zone.high-contrast:hover {
+            background: #00e5ff;
+            color: #000000;
+            border-color: #ffffff;
+            box-shadow: 0 0 40px rgba(0, 229, 255, 0.7);
+        }
+
         .drop-zone p {
             font-size: 20px;
             color: #e6edf3;
@@ -235,12 +297,20 @@
             color: #24292e;
         }
 
+        .drop-zone.high-contrast p {
+            color: #ffffff;
+        }
+
         .drop-zone.dragover p, .drop-zone:hover p {
             color: #0d1117;
         }
 
         .drop-zone.light.dragover p, .drop-zone.light:hover p {
             color: #ffffff;
+        }
+
+        .drop-zone.high-contrast.dragover p, .drop-zone.high-contrast:hover p {
+            color: #000000;
         }
 
         .action-buttons {
@@ -268,6 +338,11 @@
             box-shadow: 0 0 25px rgba(0, 123, 255, 0.4);
         }
 
+        .action-btn.high-contrast {
+            background: #00e5ff;
+            box-shadow: 0 0 25px rgba(0, 229, 255, 0.6);
+        }
+
         .action-btn:hover {
             background: #00e5ff;
             transform: scale(1.12);
@@ -277,6 +352,12 @@
         .action-btn.light:hover {
             background: #0056b3;
             box-shadow: 0 0 35px rgba(0, 123, 255, 0.6);
+        }
+
+        .action-btn.high-contrast:hover {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 0 35px rgba(255, 255, 255, 0.9);
         }
 
         .action-btn.hidden {
@@ -300,6 +381,11 @@
             text-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
         }
 
+        .results-section.high-contrast h2 {
+            color: #00e5ff;
+            text-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+        }
+
         .results-container {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -316,6 +402,12 @@
             background: #ffffff;
             border-color: #007bff;
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .results-container.high-contrast {
+            background: #111111;
+            border-color: #00e5ff;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
         }
 
         .result-section {
@@ -336,6 +428,11 @@
             text-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
         }
 
+        .result-section.high-contrast h3 {
+            color: #00e5ff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
+        }
+
         .result-section pre {
             white-space: pre-wrap;
             background: #21262d;
@@ -354,6 +451,12 @@
             border-left: 6px solid #0056b3;
         }
 
+        .result-section.high-contrast pre {
+            background: #222222;
+            color: #ffffff;
+            border-left: 6px solid #ffffff;
+        }
+
         .confidence-meter {
             margin-top: 20px;
             width: 100%;
@@ -370,6 +473,11 @@
             box-shadow: 0 0 10px rgba(0, 123, 255, 0.2);
         }
 
+        .confidence-meter.high-contrast {
+            background: #333333;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+        }
+
         .confidence-meter-fill {
             height: 100%;
             background: linear-gradient(90deg, #26a69a, #00e5ff);
@@ -378,6 +486,10 @@
 
         .confidence-meter-fill.light {
             background: linear-gradient(90deg, #007bff, #0056b3);
+        }
+
+        .confidence-meter-fill.high-contrast {
+            background: linear-gradient(90deg, #00e5ff, #ffffff);
         }
 
         .confidence-label {
@@ -390,6 +502,10 @@
 
         .confidence-label.light {
             color: #24292e;
+        }
+
+        .confidence-label.high-contrast {
+            color: #ffffff;
         }
 
         .slide-viewer {
@@ -416,6 +532,11 @@
             box-shadow: 0 0 30px rgba(0, 123, 255, 0.3);
         }
 
+        .slide-card.high-contrast {
+            border-color: #00e5ff;
+            box-shadow: 0 0 30px rgba(0, 229, 255, 0.5);
+        }
+
         .slide-card:hover {
             transform: rotateY(3deg) rotateX(3deg);
             box-shadow: 0 0 50px rgba(0, 229, 255, 0.7);
@@ -423,6 +544,10 @@
 
         .slide-card.light:hover {
             box-shadow: 0 0 50px rgba(0, 123, 255, 0.5);
+        }
+
+        .slide-card.high-contrast:hover {
+            box-shadow: 0 0 50px rgba(0, 229, 255, 0.7);
         }
 
         .slide-card:active {
@@ -453,6 +578,11 @@
             border-top-color: #0056b3;
         }
 
+        #loading.high-contrast {
+            border-color: #00e5ff;
+            border-top-color: #ffffff;
+        }
+
         #loading::before, #loading::after {
             content: '';
             position: absolute;
@@ -465,6 +595,10 @@
 
         #loading.light::before, #loading.light::after {
             background: #0056b3;
+        }
+
+        #loading.high-contrast::before, #loading.high-contrast::after {
+            background: #ffffff;
         }
 
         #loading::before {
@@ -517,6 +651,12 @@
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
         }
 
+        .login-container.high-contrast, .summary-container.high-contrast, .tutorial-container.high-contrast {
+            background: #111111;
+            border-color: #00e5ff;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+
         .login-container.error {
             animation: shake 0.5s ease;
         }
@@ -531,6 +671,11 @@
         .login-container.light h2, .summary-container.light h2, .tutorial-container.light h2 {
             color: #007bff;
             text-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .login-container.high-contrast h2, .summary-container.high-contrast h2, .tutorial-container.high-contrast h2 {
+            color: #00e5ff;
+            text-shadow: 0 0 10px rgba(0, 229, 255, 0.5);
         }
 
         .login-container input {
@@ -549,6 +694,12 @@
             border-color: #007bff;
             background: #f6f8fa;
             color: #24292e;
+        }
+
+        .login-container.high-contrast input {
+            border-color: #00e5ff;
+            background: #222222;
+            color: #ffffff;
         }
 
         .login-container button, .summary-container button, .tutorial-container button {
@@ -571,6 +722,12 @@
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
         }
 
+        .login-container.high-contrast button, .summary-container.high-contrast button, .tutorial-container.high-contrast button {
+            background: #00e5ff;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+        }
+
         .login-container button:hover, .summary-container button:hover, .tutorial-container button:hover {
             background: #00e5ff;
             box-shadow: 0 0 30px rgba(0, 229, 255, 0.8);
@@ -579,6 +736,12 @@
         .login-container.light button:hover, .summary-container.light button:hover, .tutorial-container.light button:hover {
             background: #0056b3;
             box-shadow: 0 0 30px rgba(0, 123, 255, 0.6);
+        }
+
+        .login-container.high-contrast button:hover, .summary-container.high-contrast button:hover, .tutorial-container.high-contrast button:hover {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
         }
 
         .error-message {
@@ -605,6 +768,12 @@
             border-left: 4px solid #0056b3;
         }
 
+        .summary-content.high-contrast, .tutorial-content.high-contrast {
+            background: #222222;
+            color: #ffffff;
+            border-left: 4px solid #ffffff;
+        }
+
         .history-section {
             animation: neonPulse 1.5s ease 0.8s forwards;
         }
@@ -624,6 +793,12 @@
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
         }
 
+        .history-container.high-contrast {
+            background: #111111;
+            border-color: #00e5ff;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+
         .history-item {
             margin-bottom: 30px;
             border-bottom: 1px solid #26a69a;
@@ -635,6 +810,10 @@
             border-bottom: 1px solid #007bff;
         }
 
+        .history-item.high-contrast {
+            border-bottom: 1px solid #00e5ff;
+        }
+
         .history-item h4 {
             color: #26a69a;
             font-size: 20px;
@@ -643,6 +822,10 @@
 
         .history-item.light h4 {
             color: #007bff;
+        }
+
+        .history-item.high-contrast h4 {
+            color: #00e5ff;
         }
 
         .history-item img {
@@ -666,6 +849,12 @@
             border-left: 4px solid #0056b3;
         }
 
+        .history-item.high-contrast pre {
+            background: #222222;
+            color: #ffffff;
+            border-left: 4px solid #ffffff;
+        }
+
         .settings-section {
             animation: neonPulse 1.5s ease 1s forwards;
         }
@@ -685,6 +874,12 @@
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
         }
 
+        .settings-container.high-contrast {
+            background: #111111;
+            border-color: #00e5ff;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+
         .settings-item {
             margin-bottom: 20px;
         }
@@ -698,6 +893,10 @@
 
         .settings-item.light label {
             color: #24292e;
+        }
+
+        .settings-item.high-contrast label {
+            color: #ffffff;
         }
 
         .settings-item select, .settings-item input[type="color"] {
@@ -715,6 +914,12 @@
             border-color: #007bff;
             background: #f6f8fa;
             color: #24292e;
+        }
+
+        .settings-item.high-contrast select, .settings-item.high-contrast input[type="color"] {
+            border-color: #00e5ff;
+            background: #222222;
+            color: #ffffff;
         }
 
         .settings-item input[type="checkbox"] {
@@ -740,6 +945,12 @@
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.4);
         }
 
+        .settings-container.high-contrast #save-settings {
+            background: #00e5ff;
+            color: #000000;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.6);
+        }
+
         #save-settings:hover {
             background: #00e5ff;
             box-shadow: 0 0 30px rgba(0, 229, 255, 0.8);
@@ -748,6 +959,12 @@
         .settings-container.light #save-settings:hover {
             background: #0056b3;
             box-shadow: 0 0 30px rgba(0, 123, 255, 0.6);
+        }
+
+        .settings-container.high-contrast #save-settings:hover {
+            background: #ffffff;
+            color: #000000;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.8);
         }
 
         .tutorial-section {
@@ -769,6 +986,12 @@
             box-shadow: 0 0 20px rgba(0, 123, 255, 0.3);
         }
 
+        .tutorial-container.high-contrast {
+            background: #111111;
+            border-color: #00e5ff;
+            box-shadow: 0 0 20px rgba(0, 229, 255, 0.5);
+        }
+
         .tutorial-step {
             margin-bottom: 20px;
         }
@@ -783,6 +1006,10 @@
             color: #007bff;
         }
 
+        .tutorial-step.high-contrast h3 {
+            color: #00e5ff;
+        }
+
         .tutorial-step p {
             font-size: 16px;
             color: #e6edf3;
@@ -790,6 +1017,10 @@
 
         .tutorial-step.light p {
             color: #24292e;
+        }
+
+        .tutorial-step.high-contrast p {
+            color: #ffffff;
         }
 
         @keyframes neonPulse {
@@ -851,6 +1082,11 @@
                 border-bottom: 2px solid #007bff;
             }
 
+            .nav-links.high-contrast {
+                background: #111111;
+                border-bottom: 2px solid #00e5ff;
+            }
+
             .nav-links.active {
                 display: flex;
             }
@@ -907,6 +1143,10 @@
         .light [tabindex]:focus, .light button:focus, .light input:focus, .light select:focus {
             outline-color: #007bff;
         }
+
+        .high-contrast [tabindex]:focus, .high-contrast button:focus, .high-contrast input:focus, .high-contrast select:focus {
+            outline-color: #ffffff;
+        }
     </style>
 </head>
 <body>
@@ -941,7 +1181,7 @@
                 </div>
                 <div class="tutorial-step">
                     <h3>Step 2: Upload a Slide</h3>
-                    <p>Drag and drop a .png or .jpg slide image or click to browse. Use files named slide1 to slide10 for demo results.</p>
+                    <p>Drag and drop a .png or .jpg slide image or click to browse. Use files named slide1 to slide20 for demo results.</p>
                 </div>
                 <div class="tutorial-step">
                     <h3>Step 3: Analyze Results</h3>
@@ -953,7 +1193,7 @@
                 </div>
                 <div class="tutorial-step">
                     <h3>Step 5: Customize Settings</h3>
-                    <p>Adjust theme, notifications, highlight color, and language in the Settings section.</p>
+                    <p>Adjust theme, notifications, highlight color, language, contrast, and font size in the Settings section.</p>
                 </div>
             </div>
             <button id="close-tutorial-btn">Close Tutorial</button>
@@ -977,7 +1217,7 @@
 
     <!-- Hero Section -->
     <section id="home" class="hero-section" role="region" aria-labelledby="home-title">
-        <h1 id="home-title">AI Powered Digital Pathologist</h1>
+        <h1 id="home-title">AI-Powered Digital Pathologist</h1>
         <p>Analyze malaria slides with AI precision, featuring a 3D viewer, confidence visualization, image highlighting, diagnostic summary, PDF/CSV report export, upload history, customizable settings, and an interactive tutorial.</p>
     </section>
 
@@ -1037,6 +1277,7 @@
                 <select id="theme-select" aria-label="Select theme">
                     <option value="dark">Dark</option>
                     <option value="light">Light</option>
+                    <option value="high-contrast">High Contrast</option>
                 </select>
             </div>
             <div class="settings-item">
@@ -1055,6 +1296,21 @@
                     <option value="fr">Français</option>
                 </select>
             </div>
+            <div class="settings-item">
+                <label for="contrast-select">Contrast:</label>
+                <select id="contrast-select" aria-label="Select contrast">
+                    <option value="normal">Normal</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            <div class="settings-item">
+                <label for="font-size-select">Font Size:</label>
+                <select id="font-size-select" aria-label="Select font size">
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                    <option value="xlarge">Extra Large</option>
+                </select>
+            </div>
             <button id="save-settings" class="action-btn">Save Settings</button>
         </div>
     </section>
@@ -1071,7 +1327,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
     <script>
-        // Initialize login state
+        // Initialize login state with proper JSON parsing
         const showLogin = JSON.parse('{{ show_login | tojson | safe }}');
         const loginModal = document.querySelector('#login-modal');
         const loginBtn = document.querySelector('#login-btn');
@@ -1092,6 +1348,8 @@
         const notificationsToggle = document.querySelector('#notifications-toggle');
         const highlightColor = document.querySelector('#highlight-color');
         const languageSelect = document.querySelector('#language-select');
+        const contrastSelect = document.querySelector('#contrast-select');
+        const fontSizeSelect = document.querySelector('#font-size-select');
         const saveSettingsBtn = document.querySelector('#save-settings');
         const dropZone = document.querySelector('.drop-zone');
         const fileInput = document.querySelector('#image-upload');
@@ -1120,7 +1378,7 @@
             mainSections.forEach(section => section.classList.remove('active'));
         } else {
             loginModal.classList.remove('active');
-            mainSections.forEach(section => section.classList.add('active'));
+            document.querySelector('#home').classList.add('active');
             fetchHistory();
             loadSettings();
         }
@@ -1146,7 +1404,7 @@
             .then(data => {
                 if (data.success) {
                     loginModal.classList.remove('active');
-                    mainSections.forEach(section => section.classList.add('active'));
+                    document.querySelector('#home').classList.add('active');
                     fetchHistory();
                     loadSettings();
                     if (notificationsToggle.checked) {
@@ -1273,23 +1531,20 @@
                     slideImage.style.transform = `scale(${currentZoom}) rotate(${currentRotation}deg)`;
                     [downloadBtn, exportCsvBtn, summaryBtn, highlightBtn, zoomInBtn, zoomOutBtn, rotateBtn].forEach(btn => btn.classList.remove('hidden'));
 
-                    // Parse confidence from result
-                    const resultContent = resultText.querySelector('pre').textContent;
-                    const confidenceMatch = resultContent.match(/Confidence: (\d+)%/);
-                    const confidence = confidenceMatch ? parseInt(confidenceMatch[1]) : 0;
-                    const meterFill = document.querySelector('#confidence-meter-fill');
-                    const label = document.querySelector('#confidence-label');
-                    meterFill.style.width = `${confidence}%`;
-                    label.textContent = `Confidence: ${confidence}%`;
+                    // Update confidence meter
+                    const confidence = data.confidence || 0;
+                    confidenceMeterFill.style.width = `${confidence}%`;
+                    confidenceLabel.textContent = `Confidence: ${confidence}%`;
 
-                    // Parse highlights
-                    const highlightsMatch = resultContent.match(/Highlights: ([^\n]+)/);
-                    if (highlightsMatch) {
-                        highlights = generateRandomHighlights();
+                    // Generate random highlights
+                    highlights = generateRandomHighlights(data.highlights);
+                    if (data.highlights.length > 0) {
+                        highlightBtn.classList.remove('hidden');
                     }
 
                     // Bind summary button
                     document.querySelector('#summary-btn').addEventListener('click', () => {
+                        const resultContent = resultText.querySelector('pre').textContent;
                         const diagnosisMatch = resultContent.match(/Diagnosis: ([^\n]+)/);
                         const diagnosis = diagnosisMatch ? diagnosisMatch[1] : 'No diagnosis available';
                         summaryContent.textContent = `Diagnosis: ${diagnosis}\nConfidence: ${confidence}%`;
@@ -1339,256 +1594,4 @@
         });
 
         // Zoom out
-        zoomOutBtn.addEventListener('click', () => {
-            currentZoom = Math.max(currentZoom - 0.2, 0.5);
-            slideImage.style.transform = `scale(${currentZoom}) rotate(${currentRotation}deg)`;
-            updateHighlightCanvas();
-        });
-
-        // Rotate image
-        rotateBtn.addEventListener('click', () => {
-            currentRotation = (currentRotation + 90) % 360;
-            slideImage.style.transform = `scale(${currentZoom}) rotate(${currentRotation}deg)`;
-            updateHighlightCanvas();
-        });
-
-        // Update highlight canvas on zoom/rotate
-        function updateHighlightCanvas() {
-            if (highlights.length > 0 && highlightCanvas.style.display !== 'none') {
-                highlightCanvas.width = slideImage.width;
-                highlightCanvas.height = slideImage.height;
-                const ctx = highlightCanvas.getContext('2d');
-                ctx.clearRect(0, 0, highlightCanvas.width, highlightCanvas.height);
-                highlights.forEach(highlight => {
-                    ctx.beginPath();
-                    ctx.arc(highlight.x, highlight.y, highlight.radius, 0, 2 * Math.PI);
-                    ctx.strokeStyle = highlightColor.value;
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-                    ctx.font = '12px Arial';
-                    ctx.fillStyle = highlightColor.value;
-                    ctx.fillText(highlight.label, highlight.x + highlight.radius + 5, highlight.y);
-                });
-            }
-        }
-
-        // Generate random highlights (fake)
-        function generateRandomHighlights() {
-            const numHighlights = Math.floor(Math.random() * 5) + 3; // 3-7 highlights
-            const highlights = [];
-            for (let i = 0; i < numHighlights; i++) {
-                highlights.push({
-                    x: Math.random() * slideImage.width,
-                    y: Math.random() * slideImage.height,
-                    radius: Math.random() * 20 + 10,
-                    label: 'Parasite'
-                });
-            }
-            return highlights;
-        }
-
-        // Close summary modal
-        closeSummaryBtn.addEventListener('click', () => {
-            summaryModal.classList.remove('active');
-        });
-
-        // Close tutorial modal
-        closeTutorialBtn.addEventListener('click', () => {
-            tutorialModal.classList.remove('active');
-        });
-
-        // Start tutorial
-        startTutorialBtn.addEventListener('click', () => {
-            tutorialModal.classList.add('active');
-        });
-
-        // Download PDF report
-        downloadBtn.addEventListener('click', () => {
-            const resultContent = resultText.querySelector('pre')?.textContent || 'No results available';
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF();
-            pdf.setFontSize(16);
-            pdf.text('AI Diagnosis Report', 20, 20);
-            pdf.setFontSize(12);
-            pdf.text(resultContent, 20, 30);
-            pdf.save(`diagnosis_report_${new Date().toISOString()}.pdf`);
-        });
-
-        // Export CSV
-        exportCsvBtn.addEventListener('click', () => {
-            const resultContent = resultText.querySelector('pre')?.textContent || 'No results available';
-            const lines = resultContent.split('\n').filter(line => line.trim());
-            const csvData = lines.map(line => {
-                const [key, value] = line.split(': ').map(s => s.trim());
-                return { Key: key, Value: value };
-            });
-            const csv = Papa.unparse(csvData);
-            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = `diagnosis_report_${new Date().toISOString()}.csv`;
-            link.click();
-            URL.revokeObjectURL(link.href);
-        });
-
-        // Fetch history
-        function fetchHistory() {
-            fetch('/history')
-                .then(response => response.json())
-                .then(data => {
-                    historyContainer.innerHTML = '';
-                    data.history.forEach(item => {
-                        const historyItem = document.createElement('div');
-                        historyItem.classList.add('history-item');
-                        historyItem.classList.add(themeSelect.value);
-                        historyItem.innerHTML = `
-                            <h4>${item.filename} <span>(${item.timestamp})</span></h4>
-                            <img src="data:${item.mime_type};base64,${item.image_data}" style="max-width: 200px;" alt="History slide image">
-                            <pre>${item.result}</pre>
-                        `;
-                        historyContainer.appendChild(historyItem);
-                    });
-                })
-                .catch(error => {
-                    showNotification(`Error fetching history: ${error.message}`, true);
-                });
-        }
-
-        // Load settings
-        function loadSettings() {
-            fetch('/settings')
-                .then(response => response.json())
-                .then(data => {
-                    themeSelect.value = data.settings.theme;
-                    notificationsToggle.checked = data.settings.notifications;
-                    highlightColor.value = data.settings.highlight_color;
-                    languageSelect.value = data.settings.language;
-                    applyTheme(data.settings.theme);
-                    applyLanguage(data.settings.language);
-                })
-                .catch(error => {
-                    showNotification(`Error loading settings: ${error.message}`, true);
-                });
-        }
-
-        // Apply theme
-        function applyTheme(theme) {
-            document.body.className = theme;
-            document.querySelectorAll('.navbar, .upload-container, .results-container, .history-container, .settings-container, .tutorial-container, .login-container, .summary-container, .drop-zone, .confidence-meter, .confidence-meter-fill, .confidence-label, .history-item, .result-section, .result-section pre, .login-container input, .slide-card, .action-btn, #loading, #loading::before, #loading::after, #save-settings, .tutorial-step, .tutorial-step h3, .tutorial-step p').forEach(el => {
-                el.classList.remove('dark', 'light');
-                el.classList.add(theme);
-            });
-        }
-
-        // Apply language (simulated)
-        function applyLanguage(language) {
-            const translations = {
-                en: {
-                    'home-title': 'AI Powered Digital Pathologist',
-                    'home-desc': 'Analyze malaria slides with AI precision, featuring a 3D viewer, confidence visualization, image highlighting, diagnostic summary, PDF/CSV report export, upload history, customizable settings, and an interactive tutorial.',
-                    'upload-title': 'Upload Slide',
-                    'results-title': 'Analysis Results',
-                    'history-title': 'Upload History',
-                    'settings-title': 'Settings',
-                    'tutorial-section-title': 'Interactive Tutorial',
-                    'login-title': 'Staff Login',
-                    'summary-title': 'Diagnostic Summary'
-                },
-                es: {
-                    'home-title': 'Patólogo Digital Potenciado por IA',
-                    'home-desc': 'Analiza diapositivas de malaria con precisión de IA, con visor 3D, visualización de confianza, resaltado de imágenes, resumen diagnóstico, exportación de informes en PDF/CSV, historial de cargas, ajustes personalizables y tutorial interactivo.',
-                    'upload-title': 'Cargar Diapositiva',
-                    'results-title': 'Resultados del Análisis',
-                    'history-title': 'Historial de Cargas',
-                    'settings-title': 'Configuraciones',
-                    'tutorial-section-title': 'Tutorial Interactivo',
-                    'login-title': 'Inicio de Sesión del Personal',
-                    'summary-title': 'Resumen Diagnóstico'
-                },
-                fr: {
-                    'home-title': 'Pathologiste Numérique Alimenté par IA',
-                    'home-desc': 'Analysez les lames de paludisme avec une précision IA, avec un visualiseur 3D, une visualisation de la confiance, un surlignage d’images, un résumé diagnostique, une exportation de rapports en PDF/CSV, un historique des téléchargements, des paramètres personnalisables et un tutoriel interactif.',
-                    'upload-title': 'Télécharger une Lame',
-                    'results-title': 'Résultats de l’Analyse',
-                    'history-title': 'Historique des Téléchargements',
-                    'settings-title': 'Paramètres',
-                    'tutorial-section-title': 'Tutoriel Interactif',
-                    'login-title': 'Connexion du Personnel',
-                    'summary-title': 'Résumé Diagnostique'
-                }
-            };
-
-            Object.keys(translations[language]).forEach(id => {
-                const element = document.getElementById(id);
-                if (element) {
-                    if (element.tagName === 'H1' || element.tagName === 'H2') {
-                        element.textContent = translations[language][id];
-                    } else {
-                        element.textContent = translations[language][id];
-                    }
-                }
-            });
-        }
-
-        // Show notification
-        function showNotification(message, isError = false) {
-            if (!notificationsToggle.checked) return;
-            const notification = document.createElement('div');
-            notification.style.position = 'fixed';
-            notification.style.top = '20px';
-            notification.style.right = '20px';
-            notification.style.padding = '15px';
-            notification.style.background = isError ? '#ff5252' : '#26a69a';
-            notification.style.color = isError ? '#ffffff' : '#0d1117';
-            notification.style.borderRadius = '8px';
-            notification.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.5)';
-            notification.style.zIndex = '3000';
-            notification.textContent = message;
-            document.body.appendChild(notification);
-            setTimeout(() => {
-                notification.style.opacity = '0';
-                notification.style.transition = 'opacity 0.5s ease';
-                setTimeout(() => notification.remove(), 500);
-            }, 3000);
-        }
-
-        // Save settings
-        saveSettingsBtn.addEventListener('click', () => {
-            const settings = {
-                theme: themeSelect.value,
-                notifications: notificationsToggle.checked,
-                highlight_color: highlightColor.value,
-                language: languageSelect.value
-            };
-            fetch('/settings', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(settings)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    applyTheme(settings.theme);
-                    applyLanguage(settings.language);
-                    if (settings.notifications) {
-                        showNotification('Settings saved successfully!');
-                    }
-                }
-            })
-            .catch(error => {
-                showNotification(`Error saving settings: ${error.message}`, true);
-            });
-        });
-
-        // Accessibility: Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                loginModal.classList.remove('active');
-                summaryModal.classList.remove('active');
-                tutorialModal.classList.remove('active');
-            }
-        });
-    </script>
-</body>
-</html>
-```
+        zoomOutBtn.addEventListener('
