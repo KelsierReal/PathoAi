@@ -1,4 +1,4 @@
-```python
+ ```python
 from flask import Flask, request, render_template, jsonify, session, redirect, url_for
 import os
 import base64
@@ -234,7 +234,7 @@ def upload():
 
     # Extract base filename without extension
     base_filename, ext = os.path.splitext(filename)
-    if ext.lower() not in ['.png', '.jpg', '.jpeg']:
+    if ext.lower() not in ['.png', '.jpg', '.jpeg','.html']:
         logger.error(f"Invalid file format: {ext}")
         return jsonify({'error': 'Invalid file format. Please upload a .png or .jpg file.'}), 400
 
